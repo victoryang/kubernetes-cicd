@@ -2,9 +2,11 @@ package app
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 	//"github.com/spf13/pflag"
+	"github.com/victoryang/kubernetes-cicd/config"
 )
 
 var (
@@ -19,7 +21,13 @@ func NewCIManagerCommand() *cobra.Command {
 		//Args: cobra.MinimumNArgs(1),
 
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println(ConfigFile)
+			conf,err := config.LoadFile(ConfigFile)
+			if err!=nil {
+				fmt.Fprintf(os.Stderr, "%v\n", err)
+				return
+			}
+
+			fmt.Println(conf)
 		},
 	}
 
