@@ -2,10 +2,13 @@ package app
 
 import (
 	"fmt"
+	"log"
+	"net/http"
 	"os"
 
 	"github.com/spf13/cobra"
 	"github.com/gin-gonic/gin"
+	"github.com/elazarl/go-bindata-assetfs"
 
 	"github.com/victoryang/kubernetes-cicd/auth"
 	"github.com/victoryang/kubernetes-cicd/config"
@@ -40,9 +43,7 @@ func NewCDManagerCommand() *cobra.Command {
 			auth.InitAuthModule(conf.Ldap.Address, conf.Ldap.Password)
 			image.InitImageModule()
 			project.InitProjectModule()
-			logger.InitLoggerModule(conf.Log.File, conf.Log.Level)
-
-			kuberenetes.InitKubernetesModules()
+			logger.InitLoggerModule(conf.Log.File, true)
 
 			if err := run(conf); err!=nil {
 				log.Fatal("Run app failed,", err)
@@ -84,9 +85,12 @@ func run(c *config.Config) error {
 	}
 
 	// asset
+	router.GET("/", func(c *gin.Context) {
+		c.Redirect(http.StatusMovedPermanently, "/rolling")
+	})
 	staticFS := assetfs.AssetFS{
-		Asset:     static.Asset,
-		AssetDir:  static.AssetDir,
+		Asset:     Asset,
+		AssetDir:  AssetDir,
 	}
 	router.StaticFS("/rolling", &staticFS)
 

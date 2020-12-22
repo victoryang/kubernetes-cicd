@@ -2,7 +2,6 @@ package app
 
 import (
 	"fmt"
-	"net/http"
 
 	"github.com/victoryang/kubernetes-cicd/auth"
 

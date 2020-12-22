@@ -36,7 +36,7 @@ var (
 	}
 
 	DefaultLog = Log {
-		File: "ci.log",
+		File: "cicd.log",
 		Level: 0,
 	}
 )
@@ -62,8 +62,4 @@ type Ldap struct {
 type Log struct {
 	File 	string 		`yaml:"file"`
 	Level 	int 		`yaml:"level"`
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> f850b89c408c6ff0e48b524f6003a65c98895fba

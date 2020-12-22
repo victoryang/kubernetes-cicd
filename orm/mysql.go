@@ -18,8 +18,9 @@ func InitMysqlModule(c *config.DatabaseConfig) {
 		return "sce_" + defaultTableName
 	}
 
-	connStr := fmt.Sprintf("%v:%v@tcp(127.0.0.1:3306/rolling?parseTime=true&charset=utf8&loc=Local)", c.Username, c.Password)
+	connStr := fmt.Sprintf("%v:%v@tcp(127.0.0.1:3306)/rolling?parseTime=true&charset=utf8&loc=Local", c.Username, c.Password)
 	var err error
+	fmt.Println(connStr)
 	MySQL, err = gorm.Open("mysql", connStr)
 	if err != nil {
 		panic(fmt.Sprintf("failed to connect database: %s", err))

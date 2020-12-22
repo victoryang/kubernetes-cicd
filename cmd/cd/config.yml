@@ -1,0 +1,7 @@
+database:
+   adapter: mysql
+   username: "root"
+   password: "123456"
+ldap:
+   address: "192.168.108.50:389"
+   password: "QR^vR7jULUyw(3JV?2t{ts8M"
