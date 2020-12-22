@@ -118,7 +118,12 @@ func LoadFile(filename string) (*Config, error) {
 		return nil, err
 	}
 
+<<<<<<< HEAD
 	Configuration = cfg
 
 	return cfg, nil
 }
+=======
+	return cfg, nil
+}
+>>>>>>> f850b89c408c6ff0e48b524f6003a65c98895fba
