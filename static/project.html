@@ -1,0 +1,161 @@
+<div style="height:100%">
+    <el-card style="min-height:100%">
+        <div slot="header" style="height:30px">
+            <el-button type="text" @click.prevent="back">
+                <i class="el-icon-arrow-left" style="padding-left:20px;color:#000"></i>
+            </el-button>
+            <font color="#1F2D3D" style="padding-left:40px"> {{$route.params.project}} </font>
+            <el-button type="text" size="small" @click.prevent="toUpdateProject" style="float:right">
+                <font color="#8492A6"> 修改项目 </font>
+            </el-button>
+        </div>
+        <el-col :span="23">
+            <el-card class="content-card">
+                <div slot="header" class="content-card-header">
+                    <font color="#475669"> 总揽 </font>
+                </div>
+                <el-row>
+                    <el-col :span="5">
+                        <font size="2 " color="#475669 " style="text-align:center"> 机房： </font>
+                        <font size="6 " color="#20A0FF " style="text-align:center"> 2 </font>
+                    </el-col>
+                    <el-col :span="5">
+                        <font size="2 " color="#475669 " style="text-align:center"> 环境： </font>
+                        <font size="6 " color="#20A0FF " style="text-align:center"> 5 </font>
+                    </el-col>
+                    <el-col :span="5">
+                        <font size="2 " color="#475669 "> CPU： </font>
+                        <font size="6 " color="#20A0FF "> 68 </font>
+                    </el-col>
+                    <el-col :span="5">
+                        <font size="2 " color="#475669 "> 内存： </font>
+                        <font size="6 " color="#20A0FF "> 80 </font>
+                    </el-col>
+                    <el-col :span="4">
+                        <font size="2 " color="#475669 "> 节点： </font>
+                        <font size="6 " color="#20A0FF "> 20 </font>
+                    </el-col>
+
+                </el-row>
+            </el-card>
+            <el-tabs type="border-card" style="margin: 0px 10px 25px 10px;">
+                <el-tab-pane v-for="region in runtimeInfo.Regions" v-bind:label="region.Name">
+                    <el-col :span="12" v-for="env in region.Envs">
+                        <el-card style="margin: 15px;position:relative">
+                            <div slot="header" class="content-card-header">
+                                <font color="#475669"> {{env.Name}} </font>
+                                <el-button type="text" size="small" @click.prevent="toDeploy(region.Name,env.Name)" style="position:absolute;right:20px;top:8px">
+                                    <i class="el-icon-edit" style="color:#99A9BF;"></i>
+                                </el-button>
+                            </div>
+                            <el-row style="margin:5px">
+                                <el-col :span="6">
+                                    <font size="2 " color="#475669 " style="text-align:center"> 代码分支： </font>
+                                </el-col>
+                                <el-col :span="6">
+                                    <font size="2 " color="#20A0FF " style="text-align:center"> {{env.CodeBranch}} </font>
+                                </el-col>
+                                <el-col :span="6">
+                                    <font size="2 " color="#475669 " style="text-align:center"> 代码版本： </font>
+                                </el-col>
+                                <el-col :span="6">
+                                    <el-button type="text" size="small" @click.prevent="toDeploy(region.Name,env.Name)" style="margin:0;padding:0">
+                                        <font size="2 " color="#20A0FF " style="text-align:center"> {{env.CodeVersion}} </font>
+                                    </el-button>
+                                </el-col>
+                            </el-row>
+                            <el-row style="margin:5px">
+                                <el-col :span="6">
+                                    <font size="2 " color="#475669 " style="text-align:center"> 节点： </font>
+                                </el-col>
+                                <el-col :span="6">
+                                    <font size="2 " color="#20A0FF " style="text-align:center"> {{env.NodeNum}} </font>
+                                </el-col>
+                                <el-col :span="6">
+                                    <font size="2 " color="#475669 " style="text-align:center"> 流量： </font>
+                                </el-col>
+                                <el-col :span="6">
+                                    <font size="2 " color="#20A0FF " style="text-align:center"> {{env.Traffic}} </font>
+                                </el-col>
+                            </el-row>
+                            <el-row style="margin:5px">
+                                <el-col :span="6">
+                                    <font size="2 " color="#475669 " style="text-align:center"> 单节点 CPU： </font>
+                                </el-col>
+                                <el-col :span="6">
+                                    <font size="2 " color="#20A0FF " style="text-align:center"> {{env.CPU}} </font>
+                                </el-col>
+                                <el-col :span="6">
+                                    <font size="2 " color="#475669 " style="text-align:center"> 单节点内存： </font>
+                                </el-col>
+                                <el-col :span="6">
+                                    <font size="2 " color="#20A0FF " style="text-align:center"> {{env.Memory}} </font>
+                                </el-col>
+                            </el-row>
+                            <el-row style="margin:5px">
+                                <el-col :span="6">
+                                    <font size="2 " color="#475669 " style="text-align:center"> 运行时长： </font>
+                                </el-col>
+                                <el-col :span="6">
+                                    <font size="2 " color="#20A0FF " style="text-align:center"> {{env.UpTime}} </font>
+                                </el-col>
+                            </el-row>
+                        </el-card>
+                    </el-col>
+                    <el-button type="text" @click.prevent="createEnvDialogVisible = true">
+                        <i class="el-icon-plus" style="color:#C0CCDA;font-size:40px;margin:20px"></i>
+                    </el-button>
+                    <el-dialog title="新建运行环境" :visible.sync="createEnvDialogVisible" size="tiny">
+                        <el-row style="margin:10px">
+                            <el-col :span="8 ">
+                                <font size="2 " color="#475669 " class="input-prepend"> 环境类型： </font>
+                            </el-col>
+                            <el-col :span="10 ">
+                                <el-select v-model="createEnvParam.Name">
+                                    <el-option label="sep" value="sep"> </el-option>
+                                    <el-option label="rc" value="rc"> </el-option>
+                                    <el-option label="production" value="production"> </el-option>
+                                </el-select>
+                            </el-col>
+                        </el-row>
+                        <el-row style="margin:10px">
+                            <el-col :span="8 ">
+                                <font size="2 " color="#475669 " class="input-prepend"> 代码分支： </font>
+                            </el-col>
+                            <el-col :span="10 ">
+                                <el-select v-model="createEnvParam.CodeBranch">
+                                    <el-option label="sep" value="sep"> </el-option>
+                                    <el-option label="rc" value="rc"> </el-option>
+                                    <el-option label="prod" value="prod"> </el-option>
+                                    <el-option label="feature-1 " value="feature-1"> </el-option>
+                                    <el-option label="feature-2 " value="feature-2"> </el-option>
+                                </el-select>
+                            </el-col>
+                        </el-row>
+
+                        <el-row style="margin:10px ">
+                            <el-col :span="8 ">
+                                <font size="2 " color="#475669 " class="input-prepend "> 单节点 CPU： </font>
+                            </el-col>
+                            <el-col :span="10 ">
+                                <el-input-number v-model="createEnvParam.CPU" :min="1 " :max="16 "></el-input-number>
+                            </el-col>
+                        </el-row>
+
+                        <el-row style="margin:10px ">
+                            <el-col :span="8 ">
+                                <font size="2 " color="#475669 " class="input-prepend "> 单节点内存： </font>
+                            </el-col>
+                            <el-col :span="10 ">
+                                <el-input-number v-model="createEnvParam.Memory" :min="1 " :max="16 "></el-input-number>
+                            </el-col>
+                        </el-row>
+                        <div slot="footer" class="dialog-footer">
+                            <el-button type="primary " @click.prevent="createEnv(region.Name)" stype="float;right">新建</el-button>
+                        </div>
+                    </el-dialog>
+                </el-tab-pane>
+            </el-tabs>
+        </el-col>
+    </el-card>
+</div>

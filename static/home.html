@@ -1,0 +1,34 @@
+<div style="background: #EFF2F7;height:100%;overflow:auto">
+    <el-col :span="24">
+        <el-menu theme="dark" mode="horizontal" style="height:60px;position:fixed;box-sizing:border-box;width:100%;z-index:10">
+            <el-col :span="20" style="line-height:60px;padding-left:20px">
+                <el-button type="text" size="large" @click.prevent="toHome">
+                    <font size="5" color="#d3dce6"> SCE </font>
+                </el-button>
+                <el-button type="text" size="large" @click.prevent="toHome">
+                    <font size="5" color="#d3dce6"> | Rolling</font>
+                </el-button>
+            </el-col>
+            <el-col :span="4" style="line-height:60px">
+                <div style="float:right;padding-right:20px">
+                    <el-button type="text" size="small" @click.prevent="toCreateProject">
+                        <font color="#d3dce6"> 创建项目 </font>
+                    </el-button>
+                    <el-button type="text" size="small" @click.prevent="logout">
+                        <font color="#d3dce6"> 退出 </font>
+                    </el-button>
+                </div>
+            </el-col>
+        </el-menu>
+    </el-col>
+    <el-col :span="4" style="padding-top:60px;box-sizing:border-box;">
+        <el-menu :router="true" :default-active="$route.path">
+            <el-menu-item v-for="projName in this.$store.state.userInfo.projects" :index="'/projects/'+projName" style="height:32px;line-height:32px">
+                {{projName}}
+            </el-menu-item>
+        </el-menu>
+    </el-col>
+    <div style="height:100%;padding-top:60px;box-sizing:border-box;">
+        <router-view></router-view>
+    </div>
+</div>

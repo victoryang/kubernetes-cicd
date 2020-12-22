@@ -1,0 +1,135 @@
+<div style="height:100%">
+    <el-card style="min-height:100%">
+        <div slot="header" style="height:30px">
+            <el-button type="text" @click.prevent="back">
+                <i class="el-icon-arrow-left" style="padding-left:20px;color:#000"></i>
+            </el-button>
+            <font color="#1F2D3D" style="padding-left:40px"> {{buttonStr}}项目 </font>
+        </div>
+        <el-col :span="18">
+            <el-card class="content-card">
+                <div slot="header" class="content-card-header">
+                    <font color="#99A9BF">
+                        基本信息
+                    </font>
+                </div>
+                <el-row>
+                    <el-col :span="3 ">
+                        <font size="2 " color="#475669 " class="input-prepend"> * 项目名： </font>
+                    </el-col>
+                    <el-col :span="20 ">
+                        <el-input v-if="buttonStr != '创建'" :disabled="true" required="required" v-model="configProjectParam.projectName" size="small " placeholder="example-project"> </el-input>
+                        <el-input v-else required="required" v-model="configProjectParam.projectName" size="small " placeholder="example-project"></el-input>
+                    </el-col>
+                </el-row>
+                <el-row class="input-line">
+                    <el-col :span="3 ">
+                        <font size="2 " color="#475669 " class="input-prepend"> * Git 地址： </font>
+                    </el-col>
+                    <el-col :span="20 ">
+                        <el-input required="required" v-model="configProjectParam.gitURL" size="small " placeholder="git@git.snowballfinance.com:example/example-project.git"></el-input>
+                    </el-col>
+                </el-row>
+                <el-row class="input-line">
+                    <el-col :span="3 ">
+                        <font size="2 " color="#475669 " class="input-prepend"> HTTP 端口： </font>
+                    </el-col>
+                    <el-col :span="20 ">
+                        <el-input v-model="configProjectParam.httpPort" size="small" placeholder="8080"></el-input>
+                    </el-col>
+                </el-row>
+                <el-row class="input-line">
+                    <el-col :span="3 ">
+                        <font size="2 " color="#475669 " class="input-prepend"> 项目描述： </font>
+                    </el-col>
+                    <el-col :span="20 ">
+                        <el-input type="textarea" :autosize="{minRows:2}" v-model="configProjectParam.projectDesc" placeholder="此项目用于演示使用方法"></el-input>
+                    </el-col>
+                </el-row>
+            </el-card>
+            <el-card class="content-card">
+                <div slot="header" class="content-card-header">
+                    <font color="#99A9BF">
+                        构建信息
+                    </font>
+                </div>
+                <el-row>
+                    <el-col :span="3 ">
+                        <font size="2 " color="#475669 " class="input-prepend"> * 构建命令： </font>
+                    </el-col>
+                    <el-col :span="20 ">
+                        <el-input required="required" v-model="configProjectParam.buildCmd" size="small " placeholder="mvn -U package -DskipTests"></el-input>
+                    </el-col>
+                </el-row>
+                <el-row class="input-line">
+                    <el-col :span="3 ">
+                        <font size="2 " color="#475669 " class="input-prepend"> * 目标文件： </font>
+                    </el-col>
+                    <el-col :span="20 ">
+                        <el-input required="required" v-model="configProjectParam.targetZip" size="small " placeholder="target/examle-project.zip"></el-input>
+                    </el-col>
+                </el-row>
+                <el-row class="input-line">
+                    <el-col :span="3 ">
+                        <font size="2 " color="#475669 " class="input-prepend"> * 解压后目录： </font>
+                    </el-col>
+                    <el-col :span="20 ">
+                        <el-input required="required" v-model="configProjectParam.unzipDir" size="small " placeholder="examle-project"></el-input>
+                    </el-col>
+                </el-row>
+                <el-row class="input-line">
+                    <el-col :span="3 ">
+                        <font size="2 " color="#475669 " class="input-prepend"> * 使用语言： </font>
+                    </el-col>
+                    <el-col :span="20 ">
+                        <el-select required="required" v-model="configProjectParam.programLanguage" size="small " placeholder="Java">
+                            <el-option value="java" label="Java"></el-option>
+                            <el-option value="node" label="Node"></el-option>
+                            <el-option value="go" label="Go"></el-option>
+                        </el-select>
+                    </el-col>
+                </el-row>
+                <el-row class="input-line">
+                    <el-col :span="3 ">
+                        <font size="2 " color="#475669 " class="input-prepend"> 特殊依赖： </font>
+                    </el-col>
+                    <el-col :span="20 ">
+                        <el-input type="textarea" :autosize="{minRows:2}" v-model="configProjectParam.buildDependency" size="small " placeholder="apt-get update && apt-get install -q -y smbclient cifs-utils"></el-input>
+                    </el-col>
+                </el-row>
+            </el-card>
+            <el-card class="content-card">
+                <div slot="header" class="content-card-header">
+                    <font color="#99A9BF">
+                        运行信息
+                    </font>
+                </div>
+                <el-row>
+                    <el-col :span="3 ">
+                        <font size="2 " color="#475669 " class="input-prepend"> * 启动脚本： </font>
+                    </el-col>
+                    <el-col :span="20 ">
+                        <el-input required="required" v-model="configProjectParam.startCmd" size="small " placeholder="./bin/start_server.sh"></el-input>
+                    </el-col>
+                </el-row>
+                <el-row class="input-line">
+                    <el-col :span="3 ">
+                        <font size="2 " color="#475669 " class="input-prepend"> * 停止脚本： </font>
+                    </el-col>
+                    <el-col :span="20 ">
+                        <el-input required="required" v-model="configProjectParam.stopCmd" size="small " placeholder="./bin/stop_server.sh"></el-input>
+                    </el-col>
+                </el-row>
+                <el-row class="input-line">
+                    <el-col :span="3 ">
+                        <font size="2 " color="#475669 " class="input-prepend"> 启动前命令： </font>
+                    </el-col>
+                    <el-col :span="20 ">
+                        <el-input type="textarea" :autosize="{minRows:2}" v-model="configProjectParam.preCmd" size="small " placeholder="sudo mount -t cifs //$IP/$DIR /persist/$DIR -o rw,uid=110"></el-input>
+                    </el-col>
+                </el-row>
+            </el-card>
+            <el-button type="danger" style="margin:25px" @click.prevent="update">{{buttonStr}}</el-button>
+        </el-col>
+    </el-card>
+</div>

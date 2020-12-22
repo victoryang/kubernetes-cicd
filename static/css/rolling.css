@@ -1,0 +1,33 @@
+.login-box {
+    position: absolute;
+    background: #457fca;
+    background: #2c3e50;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #3498db, #2c3e50);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #3498db, #2c3e50);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.content-card {
+    /* background: #EFF2F7;*/
+    margin: 0px 10px 25px 10px;
+}
+
+.content-card-header {
+    height: 1px;
+    line-height: 1px;
+}
+
+.input-prepend {
+    float: right;
+    line-height: 31px;
+}
+
+.input-line {
+    margin-top: 15px
+}

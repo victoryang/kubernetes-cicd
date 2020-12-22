@@ -1,0 +1,8 @@
+<div class="login-box">
+    <el-card class=" box-card " style="width:20%;margin:20% auto;">
+        <el-form v-loading.body="loginLoading" ref="form" :model="loginParam " label-width="80px ">
+            <el-input @keyup.enter.native="login" v-model="loginParam.username " placeholder="用户名" type="text"></el-input>
+            <el-input @keyup.enter.native="login" v-model="loginParam.password " placeholder="密码" type="password"> </el-input>
+        </el-form>
+    </el-card>
+</div>

@@ -1,0 +1,57 @@
+<div style="height:100%">
+    <el-card style="min-height:100%">
+        <div slot="header" style="height:30px">
+            <el-button type="text" @click.prevent="back">
+                <i class="el-icon-arrow-left" style="padding-left:20px;color:#000"></i>
+            </el-button>
+            <font color="#1F2D3D" style="padding-left:40px ">
+                {{$route.params.project}} / {{$route.params.region}} / {{$route.params.env}}
+            </font>
+        </div>
+        <el-col :span="23">
+            <el-card class="content-card">
+                <div slot="header" class="content-card-header">
+                    <font color="#475669"> 调整节点数量 </font>
+                </div>
+                <div class="block">
+                    <el-row>
+                        <el-col :span="22 ">
+                            <el-slider v-model="node_num" :min="0" :max="20" show-input></el-slider>
+                        </el-col>
+                        <el-col :span="2 ">
+                            <el-button type="primary" @click.prevent="updateNodeNum" round size="small" style="float: right;margin:3px">变更</el-button>
+                        </el-col>
+                    </el-row>
+                </div>
+            </el-card>
+            <el-card class="content-card">
+                <div slot="header" class="content-card-header">
+                    <font color="#475669"> 可部署代码 </font>
+                </div>
+                <el-table stripe :data="images" style="width: 100%">
+                    <el-table-column type="expand">
+                        <template scope="props">
+                            <el-form label-position="left" inline class="demo-table-expand">
+                                <el-form-item label="From 镜像">
+                                    <span>java-v22</span>
+                                </el-form-item>
+                                <el-form-item label="上次部署时间">
+                                        <span>{{props.row.DeployTime}}</span>
+                                </el-form-item>
+                            </el-form>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="ID" prop="ID"> </el-table-column>
+                    <el-table-column label="代码提交时间" prop="CommitTime"> </el-table-column>
+                    <el-table-column label="版本" prop="CodeVersion"> </el-table-column>
+                    <el-table-column label="状态" prop="DeployStatus"> </el-table-column>
+                    <el-table-column label="操作" prop="Action">
+                        <template scope="scope">
+                            <el-button type="text" @click.prevent="deploy(scope.row.ID)"  size="small">部署</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-card>
+        </el-col>
+    </el-card>
+</div>
