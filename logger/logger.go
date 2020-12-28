@@ -1,74 +1,63 @@
 package logger
 
 import (
-	"log"
 	"os"
+	"time"
 
-	"github.com/toolkits/file"
+	"github.com/lestrrat-go/file-rotatelogs"
+	"github.com/rifflock/lfshook"
+	"github.com/sirupsen/logrus"
 )
 
-var (
-	LogFile   *os.File
-	Logger    *log.Logger
-	LogOutput bool
-	DetailLog bool
-)
+type Logger struct {
+	logger		*logrus.Logger
+}
 
-func InitLoggerModule(logfile string, logOutput bool) error {
-	var err error
-	//得到日志文件所在的目录，如果目录不存在，那么创建出来
-	dir := file.Dir(logfile)
-	if !file.IsExist(dir) {
-		//尝试创建，如果这也失败就不管了，后面直接fatal
-		err := file.EnsureDir(dir)
-		if err != nil {
-			log.Fatal(err)
-		}
+func NewLogger(fileName string) (*Logger,error) {
+	// 写入文件
+	src, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	if err!=nil {
+		return nil, err
 	}
-	LogFile, err := os.OpenFile(logfile, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
-	if err != nil {
-		return err
+	// 实例化
+	logger := logrus.New()
+	//设置日志级别
+	logger.SetLevel(logrus.DebugLevel)
+	//设置输出
+	logger.Out = src
+
+	// 设置 rotatelogs
+	logWriter, err := rotatelogs.New(
+		// 分割后的文件名称
+		fileName + ".%Y%m%d.log",
+
+		// 生成软链，指向最新日志文件
+		rotatelogs.WithLinkName(fileName),
+
+		// 设置最大保存时间(7天)
+		rotatelogs.WithMaxAge(7*24*time.Hour),
+
+		// 设置日志切割时间间隔(1天)
+		rotatelogs.WithRotationTime(24*time.Hour),
+	)
+	if err!=nil {
+		return nil, err
 	}
-	Logger = log.New(LogFile, "", log.Ldate|log.Ltime|log.Lshortfile)
-	LogOutput = logOutput
-	return nil
-}
 
-func Output(v ...interface{}) {
-	if LogOutput {
-		log.Println(v)
+	writeMap := lfshook.WriterMap{
+		logrus.InfoLevel:  logWriter,
+		logrus.FatalLevel: logWriter,
+		logrus.DebugLevel: logWriter,
+		logrus.WarnLevel:  logWriter,
+		logrus.ErrorLevel: logWriter,
+		logrus.PanicLevel: logWriter,
 	}
-}
 
-func Debug(v ...interface{}) {
-	Output("[debug]", v)
-	Logger.Println("[debug]", v)
-}
+	logger.AddHook(lfshook.NewHook(writeMap, &logrus.TextFormatter{
+		TimestampFormat: "2006-01-02 15:04:05",
+	}))
 
-func Info(v ...interface{}) {
-	Output("[info]", v)
-	Logger.Println("[info]", v)
-}
-
-func Warning(v ...interface{}) {
-	Output("[warning]", v)
-	Logger.Println("[warning]", v)
-}
-
-func Error(v ...interface{}) {
-	Output("[error]", v)
-	Logger.Println("[error]", v)
-}
-
-func Fatal(v ...interface{}) {
-	Output("[fatal]", v)
-	Logger.Println("[Fatal]", v)
-	os.Exit(1)
-}
-
-func Detail(v ...interface{}) {
-	if DetailLog {
-		Output("[info]", v)
-		Logger.Println("[info]", v)
-	}
+	return &Logger {
+		logger: logger,
+	}, nil
 }

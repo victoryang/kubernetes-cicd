@@ -9,7 +9,7 @@ import (
 	"github.com/jinzhu/gorm"
 
 	"github.com/victoryang/kubernetes-cicd/kubernetes"
-	"github.com/victoryang/kubernetes-cicd/logger"
+	"github.com/victoryang/kubernetes-cicd/models"
 	"github.com/victoryang/kubernetes-cicd/orm"
 )
 
@@ -82,17 +82,17 @@ func CreateProject(param *ConfigProjectParam) error {
 		return err
 	}
 
-	logger.Info("insert mysql succed")
+	models.Logger.Info("insert mysql succed")
 	// 3. 在 kubernetes 中创建 namespace #应该在项目创建后生成实例之前做
 	for _, k8s := range kubernetes.GetAll() {
 		err := k8s.CreateNamespace(proj.Name)
 		if err != nil {
-			logger.Error("k8s create namespace failed", err)
+			models.Logger.Error("k8s create namespace failed", err)
 			return err
 		}
 	}
 
-	logger.Info("kbs create namespace succed")
+	models.Logger.Info("kbs create namespace succed")
 
 	// TODO 4. 在 gitlab 中自动添加 hook 及触发镜像构建
 	return nil

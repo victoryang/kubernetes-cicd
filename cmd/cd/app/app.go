@@ -13,7 +13,7 @@ import (
 	"github.com/victoryang/kubernetes-cicd/auth"
 	"github.com/victoryang/kubernetes-cicd/config"
 	"github.com/victoryang/kubernetes-cicd/image"
-	"github.com/victoryang/kubernetes-cicd/logger"
+	"github.com/victoryang/kubernetes-cicd/models"
 	"github.com/victoryang/kubernetes-cicd/orm"
 	"github.com/victoryang/kubernetes-cicd/project"
 )
@@ -36,6 +36,8 @@ func NewCDManagerCommand() *cobra.Command {
 				return
 			}
 
+			models.InitLogger(conf.Log.File)
+
 			// always do mysql init first
 			orm.InitMysqlModule(conf.Database)
 
@@ -43,7 +45,6 @@ func NewCDManagerCommand() *cobra.Command {
 			auth.InitAuthModule(conf.Ldap.Address, conf.Ldap.Password)
 			image.InitImageModule()
 			project.InitProjectModule()
-			logger.InitLoggerModule(conf.Log.File, true)
 
 			if err := run(conf); err!=nil {
 				log.Fatal("Run app failed,", err)
