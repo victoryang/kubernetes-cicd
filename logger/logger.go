@@ -15,7 +15,7 @@ type Logger struct {
 
 func NewLogger(fileName string) (*Logger,error) {
 	// 写入文件
-	src, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	src, err := os.OpenFile(fileName, os.O_CREATE|os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 	if err!=nil {
 		return nil, err
 	}
