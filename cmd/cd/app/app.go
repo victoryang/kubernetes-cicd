@@ -30,6 +30,8 @@ func NewCDManagerCommand() *cobra.Command {
 		//Args: cobra.MinimumNArgs(1),
 
 		Run: func(cmd *cobra.Command, args []string) {
+
+			config.SetDebugMode(config.DebugMode)
 			conf,err := config.LoadFile(ConfigFile)
 			if err!=nil {
 				fmt.Fprintf(os.Stderr, "%v\n", err)

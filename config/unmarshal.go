@@ -33,6 +33,10 @@ func (c *Config) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		c.Log = DefaultConfig.Log
 	}
 
+	if c.DebugMode == false {
+		c.DebugMode = DefaultConfig.DebugMode
+	}
+
 	return nil
 }
 

@@ -7,12 +7,15 @@ type LoginParam struct {
 }
 
 // Login check if user has authority and generage token
-func Login(param *LoginParam) (user *User, err error) {
+func Login(param *LoginParam, debugMode bool) (user *User, err error) {
 	user = &User{}
-	authErr := user.AuthByLdap(param.Username, param.Password)
-	if authErr != nil {
-		return user, authErr
+	if debugMode == false {
+		authErr := user.AuthByLdap(param.Username, param.Password)
+		if authErr != nil {
+			return user, authErr
+		}
 	}
+
 	user.Name = param.Username
 	err = user.GetInfo()
 	if err != nil {

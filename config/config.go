@@ -22,6 +22,7 @@ var (
 		Database: &DefaultDatabase,
 		Ldap: &DefaultLdap,
 		Log: &DefaultLog,
+		DebugMode: false,
 	}
 
 	DefaultDatabase = DatabaseConfig {
@@ -46,6 +47,7 @@ type Config struct {
 	Database 	*DatabaseConfig 	`yaml:"database"`
 	Ldap 		*Ldap 		`yaml:"ldap,omitempty"`
 	Log 		*Log			`yaml:"log,omitempty"`
+	DebugMode		bool		`yaml:"debug,omitempty"`
 }
 
 type DatabaseConfig struct {

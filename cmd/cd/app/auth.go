@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/victoryang/kubernetes-cicd/auth"
+	"github.com/victoryang/kubernetes-cicd/config"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,14 +24,13 @@ func login(c *gin.Context) {
 
 	// Logic
 	var userinfo *auth.User
-	userinfo, err = auth.Login(param)
+	userinfo, err = auth.Login(param, config.GetDebugMode())
 	if err != nil {
 		err = fmt.Errorf("Authorized Failed: %v", err)
 		HttpResponseWithBadRequest(c, err)
 		return
 	}
 	HttpResponseWithSuccess(c, userinfo)
-
 }
 
 func authorize() gin.HandlerFunc {
