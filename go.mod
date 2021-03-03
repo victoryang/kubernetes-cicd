@@ -6,6 +6,7 @@ require (
 	github.com/elazarl/go-bindata-assetfs v1.0.1
 	github.com/fastly/go-utils v0.0.0-20180712184237-d95a45783239 // indirect
 	github.com/gin-gonic/gin v1.6.3
+	github.com/google/go-github/v33 v33.0.0
 	github.com/imdario/mergo v0.3.11 // indirect
 	github.com/jehiah/go-strftime v0.0.0-20171201141054-1d33003b3869 // indirect
 	github.com/jinzhu/gorm v1.9.16
