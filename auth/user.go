@@ -154,7 +154,7 @@ func (u *User) GetInfoFromGithub() error{
 	for _,repo :=range repos {
 		toAdd := false
 		for _, proj := range projects {
-			if proj == repo {
+			if strings.Contains(strings.ToLower(proj.GitURL), strings.ToLower(repo)) {
 				toAdd = true
 				break
 			}
