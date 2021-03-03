@@ -14,6 +14,14 @@ func Login(param *LoginParam, debugMode bool) (user *User, err error) {
 		if authErr != nil {
 			return user, authErr
 		}
+	} else {
+		user.Name = param.Username
+		err = user.GetInfoFromGithub()
+		if err != nil {
+			return
+		}
+		err = user.Store()
+		return
 	}
 
 	user.Name = param.Username

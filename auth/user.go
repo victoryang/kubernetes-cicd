@@ -14,6 +14,7 @@ import (
 
 	"github.com/victoryang/kubernetes-cicd/gitlab"
 	"github.com/victoryang/kubernetes-cicd/orm"
+	"github.com/victoryang/kubernetes-cicd/scm"
 	"github.com/victoryang/kubernetes-cicd/project"
 )
 
@@ -133,6 +134,37 @@ func (u *User) GetInfo() error {
 			u.Projects = append(u.Projects, proj.Name)
 		}
 	}
+	sort.Strings(u.Projects)
+	return nil
+}
+
+func (u *User) GetInfoFromGithub() error{
+	// get projects info
+	projects, err := project.GetAllProjects()
+	if err != nil {
+		return err
+	}
+
+	repos, err := scm.Client.GetRepositories()
+	if err != nil {
+		return err
+	}
+
+	u.Projects = make([]string, 0)
+	for _,repo :=range repos {
+		toAdd := false
+		for _, proj := range projects {
+			if proj == repo {
+				toAdd = true
+				break
+			}
+		}
+
+		if toAdd {
+			u.Projects = append(u.Projects, repo)
+		}
+	}
+
 	sort.Strings(u.Projects)
 	return nil
 }
