@@ -2,6 +2,8 @@ package scm
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	"github.com/google/go-github/v33/github"
 )
@@ -34,13 +36,13 @@ func NewGitHubClient(username,password string) bool {
 func (c *GitHubClient) GetRepositories() ([]string, error) {
 	ctx := context.Background()
 	repos, _, err := c.client.Repositories.List(ctx, "", nil)
-	if listPorjsErr != nil {
-		return nil, fmt.Errorf("Get user's project from gitlab error:  %v", listPorjsErr)
+	if err != nil {
+		return nil, fmt.Errorf("Get user's project from gitlab error:  %v", err)
 	}
 
 	repositories := []string{}
 	for _, repo := range repos {
-		repositories = append(repositories, repo.Name)
+		repositories = append(repositories, *repo.Name)
 	}
 	return repositories, nil
 }
