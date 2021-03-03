@@ -16,6 +16,7 @@ import (
 	"github.com/victoryang/kubernetes-cicd/models"
 	"github.com/victoryang/kubernetes-cicd/orm"
 	"github.com/victoryang/kubernetes-cicd/project"
+	"github.com/victoryang/kubernetes-cicd/scm"
 )
 
 var (
@@ -39,6 +40,8 @@ func NewCDManagerCommand() *cobra.Command {
 			config.SetDebugMode(conf.DebugMode)
 
 			models.InitLogger(conf.Log.File)
+
+			scm.NewGitHubClient("victoryang", conf.GithubSecret)
 
 			// always do mysql init first
 			orm.InitMysqlModule(conf.Database)

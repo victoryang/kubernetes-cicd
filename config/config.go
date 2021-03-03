@@ -23,6 +23,7 @@ var (
 		Ldap: &DefaultLdap,
 		Log: &DefaultLog,
 		DebugMode: false,
+		GithubSecret: "",
 	}
 
 	DefaultDatabase = DatabaseConfig {
@@ -48,6 +49,7 @@ type Config struct {
 	Ldap 		*Ldap 		`yaml:"ldap,omitempty"`
 	Log 		*Log			`yaml:"log,omitempty"`
 	DebugMode		bool		`yaml:"debug,omitempty"`
+	GithubSecret	string 		`yaml:"github_secret,omitempty"`
 }
 
 type DatabaseConfig struct {
