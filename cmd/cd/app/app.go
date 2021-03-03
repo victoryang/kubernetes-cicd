@@ -19,7 +19,7 @@ import (
 )
 
 var (
-	ConfigFile string = "./settings.yaml"
+	ConfigFile string
 )
 
 func NewCDManagerCommand() *cobra.Command {
@@ -36,7 +36,7 @@ func NewCDManagerCommand() *cobra.Command {
 				return
 			}
 
-			config.SetDebugMode(config.DebugMode)
+			config.SetDebugMode(conf.DebugMode)
 
 			models.InitLogger(conf.Log.File)
 
@@ -54,7 +54,7 @@ func NewCDManagerCommand() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&ConfigFile, "config", "", "Configuration file")
+	cmd.Flags().StringVar(&ConfigFile, "config", "settings.yaml", "Configuration file")
 
 	return cmd
 }
