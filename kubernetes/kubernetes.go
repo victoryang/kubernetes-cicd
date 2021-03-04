@@ -18,7 +18,7 @@ var clients map[string]*KubeCli
 func init() {
 	clients = map[string]*KubeCli{}
 	for _, region := range config.Regions {
-		c, _ := newCli(region.Addr)
+		c, _ := newCli(region.Addr, region.KubeConfig)
 		clients[region.Name] = c
 	}
 }
@@ -42,8 +42,8 @@ type KubeCli struct {
 }
 
 // newCli return a k8s cli by master url
-func newCli(masterURL string) (*KubeCli, error) {
-	config, err := clientcmd.BuildConfigFromFlags(masterURL, "")
+func newCli(masterURL string, kubeConfig string) (*KubeCli, error) {
+	config, err := clientcmd.BuildConfigFromFlags(masterURL, kubeConfig)
 	if err != nil {
 		panic(err.Error())
 	}
