@@ -1,6 +1,7 @@
 package build
 
 import (
+	"fmt"
 	"bytes"
 	"net/http"
 	"net/url"
@@ -23,13 +24,13 @@ type BuildInfo struct {
 func (rc *RollingCli) GetBuildInfo(project string) *BuildInfo {
 	fmt.Println("get build info from rolling")
 
-	url := this.Addr + "/projects/" + project + "/build_info"
+	url := rc.Addr + "/projects/" + project + "/build_info"
 	req, err := http.NewRequest("GET", url, bytes.NewBuffer(jsonStr))
 	req.Header.Set("User-Agent", "Rolling Build")
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return err
+		return nil
 	} else {
 		resp.Body.Close()
 	}
@@ -39,7 +40,7 @@ func (rc *RollingCli) GetBuildInfo(project string) *BuildInfo {
 func (rc *RollingCli) GetRuntimeInfo(project string, env string) error {
 	fmt.Println("get runtime info from rolling")
 
-	url := this.Addr + "/projects/" + project + "/runtime_info"
+	url := rc.Addr + "/projects/" + project + "/runtime_info"
 	req, err := http.NewRequest("GET", url, bytes.NewBuffer(jsonStr))
 	req.Header.Set("User-Agent", "Rolling Build")
 	req.Header.Set("Content-Type", "application/json")
@@ -52,9 +53,9 @@ func (rc *RollingCli) GetRuntimeInfo(project string, env string) error {
 	return nil
 }
 
-func (this *RollingCli) CreateImage(project string, tag string) error {
+func (rc *RollingCli) CreateImage(project string, tag string) error {
 	jsonStr := []byte(`{"Project":"` + project + `","Tag":"` + tag + `"}`)
-	req, err := http.NewRequest("POST", this.addr+"/image/create_image", bytes.NewBuffer(jsonStr))
+	req, err := http.NewRequest("POST", rc.addr+"/image/create_image", bytes.NewBuffer(jsonStr))
 	req.Header.Set("User-Agent", "Rolling Build")
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := http.DefaultClient.Do(req)

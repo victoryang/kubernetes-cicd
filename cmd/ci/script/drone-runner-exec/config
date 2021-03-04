@@ -1,0 +1,12 @@
+DRONE_RPC_PROTO=http
+DRONE_RPC_HOST=10.10.25.16:9000
+DRONE_RPC_SECRET=bea26a2221fd8090ea38720fc445eca6
+DRONE_UI_USERNAME=root
+DRONE_UI_PASSWORD=root
+DRONE_RUNNER_CAPACITY=2
+DRONE_DEBUG=true
+DRONE_LOG_FILE=/data/server/drone-exec-runner/log.txt
+DRONE_RUNNER_NAME=bjxg-ap-25-16
+DRONE_RUNNER_ENVIRON=GOROOT:/usr/local/go,GOPATH:/root/go,CI_USER:admin,CI_JOB_TOKEN:Harbor12345,CI_REGISTRY:hub.snowballfinance.com
+DRONE_RUNNER_PATH=/usr/local/go/bin:/root/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games
+DRONE_RUNNER_ROOT=/data/rolling-build/source

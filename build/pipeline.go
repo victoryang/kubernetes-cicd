@@ -16,7 +16,6 @@ const (
 	PipelineKind = "pipeline"
 	PipelineRunnerExec = "exec"
 	PackagingWorkspace string = "/data/rolling-build/projects/"
-	RegistryUrl = 
 )
 
 func NewBuildPipeline(repoInfo drone.Repo, buildInfo drone.Build) (*BuildPipeline,error) {

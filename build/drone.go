@@ -31,7 +31,7 @@ type Drone struct {
 	Addr 	string
 }
 
-func NewDroneServer(Addr string) *Drone {
+func NewDroneServer(addr string) *Drone {
 	return &Drone{
 		Addr: addr,
 	}
