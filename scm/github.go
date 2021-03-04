@@ -14,20 +14,20 @@ var (
 
 type GitHubClient struct {
 	client 		*github.Client
-	password 	string
+	token 		string
 }
 
-func NewGitHubClient(username,password string) bool {
-	tp := github.BasicAuthTransport{
-		Username: strings.TrimSpace(username),
-		Password: strings.TrimSpace(password),
-	}
+func NewGitHubClient(token string) bool {
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: token},
+	)
+	tc := oauth2.NewClient(ctx, ts)
 
-	client := github.NewClient(tp.Client())
+	client := github.NewClient(tc)
 
 	Client = &GitHubClient{
 		client,
-		password,
+		token,
 	}
 
 	return true
@@ -37,7 +37,7 @@ func (c *GitHubClient) GetRepositories() ([]string, error) {
 	ctx := context.Background()
 	repos, _, err := c.client.Repositories.List(ctx, "", nil)
 	if err != nil {
-		return nil, fmt.Errorf("Get user's project from gitlab error:  %v", err)
+		return nil, fmt.Errorf("Get user's project from github error:  %v", err)
 	}
 
 	repositories := []string{}

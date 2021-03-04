@@ -41,7 +41,7 @@ func NewCDManagerCommand() *cobra.Command {
 
 			models.InitLogger(conf.Log.File)
 
-			scm.NewGitHubClient("victoryang", conf.GithubSecret)
+			scm.NewGitHubClient(conf.GithubToken)
 
 			// always do mysql init first
 			orm.InitMysqlModule(conf.Database)

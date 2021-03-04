@@ -37,8 +37,8 @@ func (c *Config) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		c.DebugMode = DefaultConfig.DebugMode
 	}
 
-	if c.GithubSecret == "" {
-		c.GithubSecret = DefaultConfig.GithubSecret
+	if c.GithubToken == "" {
+		c.GithubToken = DefaultConfig.GithubToken
 	}
 
 	return nil
