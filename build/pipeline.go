@@ -63,7 +63,7 @@ func NewBuildPipeline(repoInfo drone.Repo, buildInfo drone.Build) (*BuildPipelin
 		TimeStamp: timestamp,
 		Version: version,
 		Tag: tag,
-		BuildCmd: rBuildInfo.Command,
+		BuildCmd: rBuildInfo.Commands,
 		Target: rBuildInfo.Target,
 		Lang: rBuildInfo.Lang,
 		ImageName: imageName,
@@ -84,9 +84,9 @@ type BuildPipeline struct {
 
 func (p *BuildPipeline) Compile() (string, error) {
 
-	steps,err := p.CreateSteps()
-	if err!=nil {
-		return "", err
+	steps := p.CreateSteps()
+	if steps==nil {
+		return "", errors.New("create step fail")
 	}
 
 	pipeline := &yaml.Pipeline {

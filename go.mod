@@ -3,6 +3,8 @@ module github.com/victoryang/kubernetes-cicd
 go 1.14
 
 require (
+	github.com/drone/drone-go v1.6.0
+	github.com/drone/drone-yaml v1.2.3
 	github.com/elazarl/go-bindata-assetfs v1.0.1
 	github.com/fastly/go-utils v0.0.0-20180712184237-d95a45783239 // indirect
 	github.com/gin-gonic/gin v1.6.3
@@ -24,6 +26,8 @@ require (
 	gorm.io/gorm v1.20.9
 	k8s.io/api v0.19.4
 	k8s.io/apimachinery v0.19.4
-	k8s.io/client-go v0.19.0
+	k8s.io/client-go v9.0.0+incompatible
 	k8s.io/utils v0.0.0-20201110183641-67b214c5f920 // indirect
 )
+
+replace k8s.io/client-go v9.0.0+incompatible => k8s.io/client-go v0.19.4

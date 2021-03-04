@@ -12,7 +12,7 @@ var (
 )
 
 func init() {
-	Rolling := NewRollingClient("8080")
+	Rolling = NewRollingClient("8080")
 }
 
 type RollingCli struct {

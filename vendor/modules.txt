@@ -1,5 +1,23 @@
+# github.com/99designs/httpsignatures-go v0.0.0-20170731043157-88528bf4ca7e
+github.com/99designs/httpsignatures-go
+# github.com/bmatcuk/doublestar v1.1.1
+github.com/bmatcuk/doublestar
+# github.com/buildkite/yaml v2.1.0+incompatible
+github.com/buildkite/yaml
 # github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
+# github.com/docker/go-units v0.3.3
+github.com/docker/go-units
+# github.com/drone/drone-go v1.6.0
+## explicit
+github.com/drone/drone-go/drone
+github.com/drone/drone-go/plugin/config
+github.com/drone/drone-go/plugin/internal/aesgcm
+github.com/drone/drone-go/plugin/internal/client
+github.com/drone/drone-go/plugin/logger
+# github.com/drone/drone-yaml v1.2.3
+## explicit
+github.com/drone/drone-yaml/yaml
 # github.com/elazarl/go-bindata-assetfs v1.0.1
 ## explicit
 github.com/elazarl/go-bindata-assetfs
@@ -274,7 +292,7 @@ k8s.io/apimachinery/pkg/util/yaml
 k8s.io/apimachinery/pkg/version
 k8s.io/apimachinery/pkg/watch
 k8s.io/apimachinery/third_party/forked/golang/reflect
-# k8s.io/client-go v0.19.0
+# k8s.io/client-go v9.0.0+incompatible => k8s.io/client-go v0.19.4
 ## explicit
 k8s.io/client-go/discovery
 k8s.io/client-go/kubernetes
