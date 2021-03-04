@@ -7,6 +7,14 @@ import (
 	"net/url"
 )
 
+var (
+	Rolling *RollingCli
+)
+
+func init() {
+	Rolling := NewRollingClient("8080")
+}
+
 type RollingCli struct {
 	Addr 	string
 }
@@ -25,7 +33,7 @@ func (rc *RollingCli) GetBuildInfo(project string) *BuildInfo {
 	fmt.Println("get build info from rolling")
 
 	url := rc.Addr + "/projects/" + project + "/build_info"
-	req, err := http.NewRequest("GET", url, bytes.NewBuffer(jsonStr))
+	req, err := http.NewRequest("GET", url, nil)
 	req.Header.Set("User-Agent", "Rolling Build")
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := http.DefaultClient.Do(req)
@@ -41,7 +49,7 @@ func (rc *RollingCli) GetRuntimeInfo(project string, env string) error {
 	fmt.Println("get runtime info from rolling")
 
 	url := rc.Addr + "/projects/" + project + "/runtime_info"
-	req, err := http.NewRequest("GET", url, bytes.NewBuffer(jsonStr))
+	req, err := http.NewRequest("GET", url, nil)
 	req.Header.Set("User-Agent", "Rolling Build")
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := http.DefaultClient.Do(req)
@@ -55,7 +63,7 @@ func (rc *RollingCli) GetRuntimeInfo(project string, env string) error {
 
 func (rc *RollingCli) CreateImage(project string, tag string) error {
 	jsonStr := []byte(`{"Project":"` + project + `","Tag":"` + tag + `"}`)
-	req, err := http.NewRequest("POST", rc.addr+"/image/create_image", bytes.NewBuffer(jsonStr))
+	req, err := http.NewRequest("POST", rc.Addr+"/image/create_image", bytes.NewBuffer(jsonStr))
 	req.Header.Set("User-Agent", "Rolling Build")
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := http.DefaultClient.Do(req)

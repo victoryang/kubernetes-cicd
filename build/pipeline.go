@@ -51,10 +51,10 @@ func NewBuildPipeline(repoInfo drone.Repo, buildInfo drone.Build) (*BuildPipelin
 		return nil, errors.New("rolling build info empty")
 	}
 
-	switch p.Lang {
+	switch rBuildInfo.Lang {
 	case "Java", "Go", "Node":
 	default:
-		return "", errors.New("Language not supported now")
+		return nil, errors.New("Language not supported now")
 	}
 
 	return &BuildPipeline {
@@ -84,7 +84,7 @@ type BuildPipeline struct {
 
 func (p *BuildPipeline) Compile() (string, error) {
 
-	steps,err := p.Builder.CreateSteps()
+	steps,err := p.CreateSteps()
 	if err!=nil {
 		return "", err
 	}
@@ -149,11 +149,12 @@ func (p *BuildPipeline) CreateBuildStep() *yaml.Container {
 }
 
 func (p *BuildPipeline) CreatePostBuildCommands() []string {
+	var from string
 	switch p.Lang {
 	case "Java":
-		from := path.Join(p.Project, p.Target)
+		from = path.Join(p.Project, p.Target)
 	case "Go":
-		from := p.Target
+		from = p.Target
 	}
 
 	to := path.Join(PackagingWorkspace, p.Project, "release-"+p.Env)
