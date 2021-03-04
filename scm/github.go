@@ -3,13 +3,14 @@ package scm
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	"github.com/google/go-github/v33/github"
+	"golang.org/x/oauth2"
 )
 
 var (
 	Client *GitHubClient
+	ctx = context.Background()
 )
 
 type GitHubClient struct {
