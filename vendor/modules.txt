@@ -15,6 +15,7 @@ github.com/drone/drone-go/plugin/config
 github.com/drone/drone-go/plugin/internal/aesgcm
 github.com/drone/drone-go/plugin/internal/client
 github.com/drone/drone-go/plugin/logger
+github.com/drone/drone-go/plugin/webhook
 # github.com/drone/drone-yaml v1.2.3
 ## explicit
 github.com/drone/drone-yaml/yaml
@@ -137,6 +138,7 @@ golang.org/x/net/http2
 golang.org/x/net/http2/hpack
 golang.org/x/net/idna
 # golang.org/x/oauth2 v0.0.0-20191202225959-858c2ad4c8b6
+## explicit
 golang.org/x/oauth2
 golang.org/x/oauth2/internal
 # golang.org/x/sys v0.0.0-20200622214017-ed371f2e16b4

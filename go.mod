@@ -19,6 +19,7 @@ require (
 	github.com/spf13/cobra v1.1.1
 	github.com/tebeka/strftime v0.1.5 // indirect
 	github.com/xanzy/go-gitlab v0.40.2
+	golang.org/x/oauth2 v0.0.0-20191202225959-858c2ad4c8b6
 	gopkg.in/asn1-ber.v1 v1.0.0-20181015200546-f715ec2f112d // indirect
 	gopkg.in/ldap.v2 v2.5.1
 	gopkg.in/yaml.v2 v2.3.0

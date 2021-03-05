@@ -77,7 +77,7 @@ func run(c *config.Config) error {
 
 	// drone-ci build hook
 	router.POST("/drone/buildhook", gin.WrapH(NewYamlPlugin()))
-	router.Post("/drone/webhook", gin.WrapH(NewWebhookPlugin()))
+	router.POST("/drone/webhook", gin.WrapH(NewWebhookPlugin()))
 
 	v1 := router.Group("/")
 	v1.Use(authorize())
