@@ -18,15 +18,17 @@ const (
 	PackagingWorkspace string = "/data/rolling-build/projects/"
 )
 
-func NewBuildPipeline(repoInfo drone.Repo, buildInfo drone.Build) (*BuildPipeline,error) {
+type DroneBuildInfo struct {
+	Project 	string
+	Env 		string
+	Timestamp 	string
+	Version 	string
+	Tag 		string
+}
 
+func ProcessRepoAndEventInfo(repoInfo *drone.Repo, buildInfo *drone.Build) *DroneBuildInfo {
 	name := repoInfo.Name
-
 	branch := strings.TrimPrefix(buildInfo.Ref, "refs/heads/")
-
-	version := buildInfo.After[:8]
-
-	timestamp := strconv.FormatInt(buildInfo.Created, 10)
 
 	var env string
 	switch branch {
@@ -39,47 +41,56 @@ func NewBuildPipeline(repoInfo drone.Repo, buildInfo drone.Build) (*BuildPipelin
 	case "sep":
 		env = "sep"
 	default:
-		fmt.Println("env", env)
-		return nil,errors.New("env not supported")
+		fmt.Println("env not supported: ", env)
+		return nil
 	}
 
-	tag := timestamp + "_" + version + "_" + branch + "_" + "base-go"
-	imageName := BuildImageName(name, tag)
+	timestamp := strconv.FormatInt(buildInfo.Created, 10)
+	version := buildInfo.After[:8]
 
-	rBuildInfo := Rolling.GetBuildInfo(name)
-	if rBuildInfo == nil {
+	tag := timestamp + "_" + version + "_" + env + "_" + "base-go"
+
+	return &DroneBuildInfo {
+		Project: name,
+		Env: env,
+		Timestamp: timestamp,
+		Version: version,
+		Tag: tag,
+	}
+}
+
+type BuildPipeline struct {
+	DroneBuildInfo
+	RollingBuildInfo
+	ImageName 	string
+}
+
+func NewBuildPipeline(repoInfo drone.Repo, buildInfo drone.Build) (*BuildPipeline,error) {
+
+	droneInfo := ProcessRepoAndEventInfo(&repoInfo, &buildInfo)
+	if droneInfo == nil {
+		return nil, errors.New("Language not supported now")
+	}
+
+	Rolling := NewRolling("adf")
+	rollingInfo := Rolling.GetBuildInfo(droneInfo.Project)
+	if rollingInfo == nil {
 		return nil, errors.New("rolling build info empty")
 	}
 
-	switch rBuildInfo.Lang {
+	switch rollingInfo.Lang {
 	case "Java", "Go", "Node":
 	default:
 		return nil, errors.New("Language not supported now")
 	}
 
+	imageName := BuildImageName(droneInfo.Project, droneInfo.Tag)
+
 	return &BuildPipeline {
-		Project: name,
-		Env: env,
-		TimeStamp: timestamp,
-		Version: version,
-		Tag: tag,
-		BuildCmd: rBuildInfo.Commands,
-		Target: rBuildInfo.Target,
-		Lang: rBuildInfo.Lang,
+		DroneBuildInfo: *droneInfo,
+		RollingBuildInfo: *rollingInfo,
 		ImageName: imageName,
 	}, nil
-}
-
-type BuildPipeline struct {
-	Project 	string
-	Env 		string
-	TimeStamp	string
-	Version 	string
-	Tag 		string
-	BuildCmd 	string
-	Target 		string
-	Lang 		string
-	ImageName 	string
 }
 
 func (p *BuildPipeline) Compile() (string, error) {

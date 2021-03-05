@@ -23,13 +23,13 @@ func NewRollingClient(addr string) *RollingCli {
 	return &RollingCli{Addr: addr}
 }
 
-type BuildInfo struct {
-	Commands 	string 		`json:"command"`
+type RollingBuildInfo struct {
+	BuildCmd 	string 		`json:"buildcmd"`
 	Target		string 		`json:"from"`
 	Lang		string 		`json:"lang"`
 }
 
-func (rc *RollingCli) GetBuildInfo(project string) *BuildInfo {
+func (rc *RollingCli) GetBuildInfo(project string) *RollingBuildInfo {
 	fmt.Println("get build info from rolling")
 
 	url := rc.Addr + "/projects/" + project + "/build_info"
