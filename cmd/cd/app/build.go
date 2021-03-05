@@ -6,6 +6,7 @@ import (
 
 	"github.com/drone/drone-go/drone"
 	"github.com/drone/drone-go/plugin/config"
+	"github.com/drone/drone-go/plugin/webhook"
 	"github.com/sirupsen/logrus"
 
 	"github.com/victoryang/kubernetes-cicd/build"
@@ -13,6 +14,7 @@ import (
 
 const (
 	YamlPluginSecret = "bea26a2221fd8090ea38720fc445eca6"
+	WebhookPluginSecret = "bea26a2221fd8090ea38720fc445eca6"
 )
 
 type YamlPlugin struct {
@@ -51,4 +53,35 @@ func (p *YamlPlugin) Find(ctx context.Context, req *config.Request) (*drone.Conf
 	return &drone.Config {
 		Data: data,
 	}, nil
+}
+
+type WebhookPlugin struct {
+
+}
+
+func NewWebhookPlugin() http.Handler {
+
+	logrus.SetLevel(logrus.DebugLevel)
+
+	handler := webhook.Handler(
+		&WebhookPlugin{},
+		WebhookPluginSecret,
+		logrus.StandardLogger(),
+	)
+
+	return handler
+}
+
+func (p *WebhookPlugin) Deliver(ctx context.Context, req *webhook.Request) error {
+	switch req.Event {
+		case "build":
+			go build.ProcessBuildEvent(req)
+		case "user":
+			go build.ProcessUserEvent(req)
+		case "repo":
+			go build.ProcessRepoEvent(req)
+		default:
+	}
+
+	return nil
 }
