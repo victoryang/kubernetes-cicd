@@ -102,7 +102,7 @@ func CreateProject(param *ConfigProjectParam) error {
 func UpdateProject(param *ConfigProjectParam) error {
 	proj := &Project{}
 	// 1. 判断输入参数格式是否正确
-	if !strings.HasPrefix(param.GitURL, "git@git.snowballfinance.com:") ||
+	if !strings.HasPrefix(param.GitURL, "git@git.snowballfinance.com:") &&
 		!strings.HasSuffix(param.GitURL, ".git") {
 		return errors.New("Git 地址应该以 git@git.snowballfinance.com 开始，以 .git 结尾")
 	}

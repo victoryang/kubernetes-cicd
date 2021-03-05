@@ -69,6 +69,12 @@ func (c *KubeCli) CreateDeployment(projName, envName, codeBranch string, podNum 
 		},
 		Spec: appsv1.DeploymentSpec{
 			Replicas: int32Ptr(podNum),
+			Selector: &metav1.LabelSelector{
+				MatchLabels: map[string]string{
+					"app":    envName,
+					"branch": codeBranch,
+				},
+			},
 			Template: v1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
