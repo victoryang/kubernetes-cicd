@@ -72,7 +72,6 @@ func NewBuildPipeline(repoInfo drone.Repo, buildInfo drone.Build) (*BuildPipelin
 		return nil, errors.New("Language not supported now")
 	}
 
-	Rolling := NewRolling("adf")
 	rollingInfo := Rolling.GetBuildInfo(droneInfo.Project)
 	if rollingInfo == nil {
 		return nil, errors.New("rolling build info empty")

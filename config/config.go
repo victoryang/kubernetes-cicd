@@ -12,7 +12,7 @@ type k8sCluster struct {
 
 var (
 	Regions = []k8sCluster{
-		k8sCluster{Name: "Local", Addr: "https://192.168.21.144:6443", KubeConfig: "~/.kube/config"},
+		k8sCluster{Name: "Local", Addr: "https://192.168.21.144:6443", KubeConfig: "/root/.kube/config"},
 	}
 )
 
