@@ -196,7 +196,7 @@ const Project = {
     },
     methods: {
         back() {
-            this.$router.back();
+            this.$router.push("/");
         },
         toUpdateProject() {
             this.$router.push('/projects/' + this.$route.params.project + '/update');
