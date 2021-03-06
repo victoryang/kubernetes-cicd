@@ -1,4 +1,4 @@
-package build
+package pipeline
 
 import (
 	"github.com/drone/drone-go/plugin/webhook"

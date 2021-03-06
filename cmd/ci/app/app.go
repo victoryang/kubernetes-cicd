@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/gin-gonic/gin"
 
-	"github.com/victoryang/kubernetes-cicd/build"
+	"github.com/victoryang/kubernetes-cicd/pipeline"
 )
 
 func NewCIManagerCommand() *cobra.Command {
@@ -18,7 +18,7 @@ func NewCIManagerCommand() *cobra.Command {
 
 		Run: func(cmd *cobra.Command, args []string) {
 
-			build.InitCDServerClientWithRemoteMode()
+			pipeline.InitCDServerClientWithRemoteMode()
 
 			if err := run(); err!=nil {
 				log.Fatal("Run app failed,", err)

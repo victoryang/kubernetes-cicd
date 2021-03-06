@@ -11,11 +11,11 @@ import (
 	"github.com/elazarl/go-bindata-assetfs"
 
 	"github.com/victoryang/kubernetes-cicd/auth"
-	"github.com/victoryang/kubernetes-cicd/build"
 	"github.com/victoryang/kubernetes-cicd/config"
 	"github.com/victoryang/kubernetes-cicd/image"
 	"github.com/victoryang/kubernetes-cicd/models"
 	"github.com/victoryang/kubernetes-cicd/orm"
+	"github.com/victoryang/kubernetes-cicd/pipeline"
 	"github.com/victoryang/kubernetes-cicd/project"
 	"github.com/victoryang/kubernetes-cicd/scm"
 )
@@ -49,8 +49,8 @@ func NewCDManagerCommand() *cobra.Command {
 
 			// then other modules
 			auth.InitAuthModule(conf.Ldap.Address, conf.Ldap.Password)
-			build.InitCDServerClientWithLocaldMode()
 			image.InitImageModule()
+			pipeline.InitCDServerClientWithLocaldMode()
 			project.InitProjectModule()
 
 			if err := run(conf); err!=nil {

@@ -1,4 +1,4 @@
-package build
+package pipeline
 
 import (
 	"encoding/json"

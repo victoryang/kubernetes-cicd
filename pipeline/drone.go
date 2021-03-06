@@ -1,4 +1,4 @@
-package build
+package pipeline
 
 const defaultPipeline = `
 kind: pipeline
