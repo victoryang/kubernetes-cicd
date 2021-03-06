@@ -76,33 +76,36 @@ func run(c *config.Config) error {
 	router.POST("/receive_hook.json", receiveHook)
 
 	// drone-ci build hook
-	router.POST("/drone/buildhook", gin.WrapH(NewYamlPlugin()))
-	router.POST("/drone/webhook", gin.WrapH(NewWebhookPlugin()))
-
-	v1 := router.Group("/")
-	v1.Use(authorize())
+	apiv1 := router.Group("/api/v1")
 	{
-		v1.POST("/create_project.json", createProject)
-		v1.POST("/update_project.json", updateProject)
-		v1.GET("/project_config.json", getProjectConfig)
-		v1.GET("/project_runtime.json", getProjectRuntime)
-		v1.POST("/create_env.json", createEnv)
-		v1.POST("/update_env_code.json", updateEnvCodeVersion)
-		v1.GET("/get_env_node_num.json", getEnvNodeNum)
-		v1.POST("/set_env_node_num.json", setEnvNodeNum)
+		apiv1.POST("/build/config", gin.WrapH(NewYamlPlugin()))
+		apiv1.POST("/build/webhook", gin.WrapH(NewWebhookPlugin()))
+	}
+
+	root := router.Group("/")
+	root.Use(authorize())
+	{
+		root.POST("/create_project.json", createProject)
+		root.POST("/update_project.json", updateProject)
+		root.GET("/project_config.json", getProjectConfig)
+		root.GET("/project_runtime.json", getProjectRuntime)
+		root.POST("/create_env.json", createEnv)
+		root.POST("/update_env_code.json", updateEnvCodeVersion)
+		root.GET("/get_env_node_num.json", getEnvNodeNum)
+		root.POST("/set_env_node_num.json", setEnvNodeNum)
 		//镜像相关
-		v1.GET("/images.json", getImageList)
+		root.GET("/images.json", getImageList)
 	}
 
 	// asset
 	router.GET("/", func(c *gin.Context) {
-		c.Redirect(http.StatusMovedPermanently, "/rolling")
+		c.Redirect(http.StatusMovedPermanently, "/kubernetes")
 	})
 	staticFS := assetfs.AssetFS{
 		Asset:     Asset,
 		AssetDir:  AssetDir,
 	}
-	router.StaticFS("/rolling", &staticFS)
+	router.StaticFS("/kubernetes", &staticFS)
 
 	return router.Run(c.EndPoint)
 }
