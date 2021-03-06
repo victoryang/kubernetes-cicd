@@ -16,7 +16,7 @@ const (
 )
 
 var (
-	CDServer *CDServerCli
+	CDServer CDServerCli
 )
 
 type CDServerCli interface {
