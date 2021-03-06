@@ -15,7 +15,7 @@ import (
 const (
 	PipelineKind = "pipeline"
 	PipelineRunnerExec = "exec"
-	PackagingWorkspace string = "/data/rolling-build/projects/"
+	PackagingWorkspace string = "/data/kubernetes-build/projects/"
 )
 
 type DroneBuildInfo struct {
@@ -61,7 +61,7 @@ func ProcessRepoAndEventInfo(repoInfo *drone.Repo, buildInfo *drone.Build) *Dron
 
 type BuildPipeline struct {
 	DroneBuildInfo
-	RollingBuildInfo
+	CIBuildInfo
 	ImageName 	string
 }
 
@@ -72,12 +72,12 @@ func NewBuildPipeline(repoInfo drone.Repo, buildInfo drone.Build) (*BuildPipelin
 		return nil, errors.New("Language not supported now")
 	}
 
-	rollingInfo := Rolling.GetBuildInfo(droneInfo.Project)
-	if rollingInfo == nil {
-		return nil, errors.New("rolling build info empty")
+	ciBuildInfo := CDServer.GetBuildInfo(droneInfo.Project)
+	if ciBuildInfo == nil {
+		return nil, errors.New("CI build info not found")
 	}
 
-	switch rollingInfo.Lang {
+	switch ciBuildInfo.Lang {
 	case "Java", "Go", "Node":
 	default:
 		return nil, errors.New("Language not supported now")
@@ -87,7 +87,7 @@ func NewBuildPipeline(repoInfo drone.Repo, buildInfo drone.Build) (*BuildPipelin
 
 	return &BuildPipeline {
 		DroneBuildInfo: *droneInfo,
-		RollingBuildInfo: *rollingInfo,
+		CIBuildInfo: *ciBuildInfo,
 		ImageName: imageName,
 	}, nil
 }

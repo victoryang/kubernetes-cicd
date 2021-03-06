@@ -10,10 +10,10 @@ func ProcessBuildEvent(req *webhook.Request) {
 
 	switch req.Action {
 	case "created":
-		Rolling.CreateImage(droneInfo.Project, droneInfo.Tag)
+		CDServer.CreateImage(droneInfo.Project, droneInfo.Tag)
 	case "updated":
 		if req.Build.Status == "success" || req.Build.Status == "failure"{
-			Rolling.UpdateImage(droneInfo.Project, droneInfo.Tag, droneInfo.Env, req.Build.Status, req.Build.Error)
+			CDServer.UpdateImage(droneInfo.Project, droneInfo.Tag, droneInfo.Env, req.Build.Status, req.Build.Error)
 		}
 	}
 

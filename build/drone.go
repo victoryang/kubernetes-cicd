@@ -21,9 +21,9 @@ steps:
   - go mod init
   - go mod vendor
   - go build -o drone-test-go -v
-  - mkdir -p /data/rolling-build/drone-test-go
-  - cp -a drone-test-go /data/rolling-build/drone-test-go/
-  - cd /data/rolling-build/drone-test-go/
+  - mkdir -p /data/kubernetes-build/drone-test-go
+  - cp -a drone-test-go /data/kubernetes-build/drone-test-go/
+  - cd /data/kubernetes-build/drone-test-go/
   - echo "docker build . ${PWD}"
 `
 
