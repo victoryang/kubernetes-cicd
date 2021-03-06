@@ -80,8 +80,8 @@ func run(c *config.Config) error {
 	// drone-ci build hook
 	apiv1 := router.Group("/api/v1")
 	{
-		apiv1.POST("/build/config", gin.WrapH(build.NewYamlPlugin()))
-		apiv1.POST("/build/webhook", gin.WrapH(build.NewWebhookPlugin()))
+		apiv1.POST("/build/config", gin.WrapH(pipeline.NewYamlPlugin()))
+		apiv1.POST("/build/webhook", gin.WrapH(pipeline.NewWebhookPlugin()))
 	}
 
 	root := router.Group("/")
