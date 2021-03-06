@@ -11,6 +11,7 @@ import (
 	"github.com/elazarl/go-bindata-assetfs"
 
 	"github.com/victoryang/kubernetes-cicd/auth"
+	"github.com/victoryang/kubernetes-cicd/build"
 	"github.com/victoryang/kubernetes-cicd/config"
 	"github.com/victoryang/kubernetes-cicd/image"
 	"github.com/victoryang/kubernetes-cicd/models"
@@ -48,6 +49,7 @@ func NewCDManagerCommand() *cobra.Command {
 
 			// then other modules
 			auth.InitAuthModule(conf.Ldap.Address, conf.Ldap.Password)
+			build.InitCDServerClientWithLocaldMode()
 			image.InitImageModule()
 			project.InitProjectModule()
 
@@ -78,8 +80,8 @@ func run(c *config.Config) error {
 	// drone-ci build hook
 	apiv1 := router.Group("/api/v1")
 	{
-		apiv1.POST("/build/config", gin.WrapH(NewYamlPlugin()))
-		apiv1.POST("/build/webhook", gin.WrapH(NewWebhookPlugin()))
+		apiv1.POST("/build/config", gin.WrapH(build.NewYamlPlugin()))
+		apiv1.POST("/build/webhook", gin.WrapH(build.NewWebhookPlugin()))
 	}
 
 	root := router.Group("/")

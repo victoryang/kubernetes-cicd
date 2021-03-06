@@ -8,8 +8,6 @@ import (
 	"github.com/drone/drone-go/plugin/config"
 	"github.com/drone/drone-go/plugin/webhook"
 	"github.com/sirupsen/logrus"
-
-	"github.com/victoryang/kubernetes-cicd/build"
 )
 
 const (
@@ -40,7 +38,7 @@ func (p *YamlPlugin) Find(ctx context.Context, req *config.Request) (*drone.Conf
 	logrus.Info("Repo Info", req.Repo)
 	logrus.Info("Build Info", req.Build)
 
-	bp,err := build.NewBuildPipeline(req.Repo, req.Build)
+	bp,err := NewBuildPipeline(req.Repo, req.Build)
 	if err!=nil {
 		return nil,err
 	}
@@ -75,11 +73,11 @@ func NewWebhookPlugin() http.Handler {
 func (p *WebhookPlugin) Deliver(ctx context.Context, req *webhook.Request) error {
 	switch req.Event {
 		case "build":
-			go build.ProcessBuildEvent(req)
+			go ProcessBuildEvent(req)
 		case "user":
-			go build.ProcessUserEvent(req)
+			go ProcessUserEvent(req)
 		case "repo":
-			go build.ProcessRepoEvent(req)
+			go ProcessRepoEvent(req)
 		default:
 	}
 

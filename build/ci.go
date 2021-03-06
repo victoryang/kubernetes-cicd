@@ -8,32 +8,52 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"path"
+)
+
+const (
+	ApiVersion1 = "api/v1"
 )
 
 var (
 	CDServer *CDServerCli
 )
 
-func init() {
-	CDServer = NewCDServerClient("8080")
+type CDServerCli interface {
+	GetBuildInfo(string) *CIBuildInfo
+	CreateImage(string,string) error
+	UpdateImage(string, string, string, string, string) error
 }
 
-type CDServerCli struct {
-	Addr 	string
-}
-
-func NewCDServerClient(addr string) *CDServerCli {
-	return &CDServerCli{Addr: addr}
-}
-
+// CI Build Info
 type CIBuildInfo struct {
 	BuildCmd 	string 		`json:"buildcmd,omitempty"`
 	Target		string 		`json:"from,omitempty"`
 	Lang		string 		`json:"lang,omitempty"`
 }
 
-func (this *CDServerCli) GetBuildInfo(project string) *CIBuildInfo {
-	respBody, err := this.Do("GET", this.Addr + "/projects/" + project + "/build_info", nil)
+// call CD server locally
+func InitCDServerClientWithLocaldMode() {
+	CDServer = nil
+}
+
+
+// Call CD server remotely
+func InitCDServerClientWithRemoteMode() {
+	CDServer = NewRemoteCDServerClient("http://127.0.0.1:8080")
+}
+
+type RemoteCDServerCli struct {
+	BaseUrl 	string
+}
+
+func NewRemoteCDServerClient(addr string) *RemoteCDServerCli {
+	return &RemoteCDServerCli{BaseUrl: addr}
+}
+
+func (this *RemoteCDServerCli) GetBuildInfo(project string) *CIBuildInfo {
+	url := path.Join(this.BaseUrl, ApiVersion1, "projects", project, "/build/config")
+	respBody, err := this.Do("GET", url, nil)
 	if err!=nil {
 		fmt.Println("Get Build Info error:", err)
 		return nil
@@ -49,10 +69,11 @@ func (this *CDServerCli) GetBuildInfo(project string) *CIBuildInfo {
 	return &info
 }
 
-func (this *CDServerCli) CreateImage(project string, tag string) error {
+func (this *RemoteCDServerCli) CreateImage(project string, tag string) error {
 	data := []byte(`{"Project":"` + project + `","Tag":"` + tag + `"}`)
 
-	_, err := this.Do("POST", this.Addr + "/image/create_image", data)
+	url := path.Join(this.BaseUrl, ApiVersion1, "/images/")
+	_, err := this.Do("POST", url, data)
 	if err!=nil {
 		fmt.Println("Create Image error:", err)
 	}
@@ -60,14 +81,15 @@ func (this *CDServerCli) CreateImage(project string, tag string) error {
 	return err
 }
 
-func (this *CDServerCli) UpdateImage(project string, tag string, env string, deployStatus string, failLog string) error {
+func (this *RemoteCDServerCli) UpdateImage(project string, tag string, env string, deployStatus string, failLog string) error {
 	data := []byte(`{"Project":"` + project + `","Tag":"` + tag + `","Env":"` + env + `","DeployStatus":"` + deployStatus + `"}`)
 	if len(failLog) > 0 {
 		failLog = url.QueryEscape(failLog)
 		data = []byte(`{"Project":"` + project + `","Tag":"` + tag + `","Env":"` + env + `","DeployStatus":"` + deployStatus + `","MaintainPlan":"` + failLog + `"}`)
 	}
 
-	_,err := this.Do("POST", this.Addr + "/image/update_image", data)
+	url := path.Join(this.BaseUrl, ApiVersion1, "/images/")
+	_,err := this.Do("POST", url, data)
 	if err!=nil {
 		fmt.Println("Update Image error:", err)
 	}
@@ -75,7 +97,7 @@ func (this *CDServerCli) UpdateImage(project string, tag string, env string, dep
 	return err
 }
 
-func (this *CDServerCli) Do(method string, url string, data []byte) ([]byte,error) {
+func (this *RemoteCDServerCli) Do(method string, url string, data []byte) ([]byte,error) {
 	req, err := http.NewRequest(method, url, bytes.NewBuffer(data))
 	if err!=nil {
 		return nil, errors.New(fmt.Sprintf("Create http request error:", err))
