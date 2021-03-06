@@ -1,8 +1,11 @@
 package build
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
 	"bytes"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 )
@@ -19,60 +22,77 @@ type CDServerCli struct {
 	Addr 	string
 }
 
-func NewCDServerClient(addr string) *CDServer {
-	return &CDServer{Addr: addr}
+func NewCDServerClient(addr string) *CDServerCli {
+	return &CDServerCli{Addr: addr}
 }
 
 type CIBuildInfo struct {
-	BuildCmd 	string 		`json:"buildcmd"`
-	Target		string 		`json:"from"`
-	Lang		string 		`json:"lang"`
+	BuildCmd 	string 		`json:"buildcmd,omitempty"`
+	Target		string 		`json:"from,omitempty"`
+	Lang		string 		`json:"lang,omitempty"`
 }
 
 func (this *CDServerCli) GetBuildInfo(project string) *CIBuildInfo {
-	fmt.Println("get build info from cd server")
-
-	url := this.Addr + "/projects/" + project + "/build_info"
-	req, err := http.NewRequest("GET", url, nil)
-	req.Header.Set("User-Agent", "Kubernetes Build")
-	req.Header.Set("Content-Type", "application/json")
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
+	respBody, err := this.Do("GET", this.Addr + "/projects/" + project + "/build_info", nil)
+	if err!=nil {
+		fmt.Println("Get Build Info error:", err)
 		return nil
-	} else {
-		resp.Body.Close()
 	}
-	return nil
+
+	var info CIBuildInfo
+	err = json.Unmarshal(respBody, &info)
+	if err!=nil {
+		fmt.Println("UnMarshal Build Info error:", err)
+		return nil
+	}
+
+	return &info
 }
 
 func (this *CDServerCli) CreateImage(project string, tag string) error {
-	jsonStr := []byte(`{"Project":"` + project + `","Tag":"` + tag + `"}`)
-	req, err := http.NewRequest("POST", this.Addr+"/image/create_image", bytes.NewBuffer(jsonStr))
-	req.Header.Set("User-Agent", "Kubernetes Build")
-	req.Header.Set("Content-Type", "application/json")
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
-	} else {
-		resp.Body.Close()
+	data := []byte(`{"Project":"` + project + `","Tag":"` + tag + `"}`)
+
+	_, err := this.Do("POST", this.Addr + "/image/create_image", data)
+	if err!=nil {
+		fmt.Println("Create Image error:", err)
 	}
-	return nil
+
+	return err
 }
 
 func (this *CDServerCli) UpdateImage(project string, tag string, env string, deployStatus string, failLog string) error {
-	jsonStr := []byte(`{"Project":"` + project + `","Tag":"` + tag + `","Env":"` + env + `","DeployStatus":"` + deployStatus + `"}`)
+	data := []byte(`{"Project":"` + project + `","Tag":"` + tag + `","Env":"` + env + `","DeployStatus":"` + deployStatus + `"}`)
 	if len(failLog) > 0 {
 		failLog = url.QueryEscape(failLog)
-		jsonStr = []byte(`{"Project":"` + project + `","Tag":"` + tag + `","Env":"` + env + `","DeployStatus":"` + deployStatus + `","MaintainPlan":"` + failLog + `"}`)
+		data = []byte(`{"Project":"` + project + `","Tag":"` + tag + `","Env":"` + env + `","DeployStatus":"` + deployStatus + `","MaintainPlan":"` + failLog + `"}`)
 	}
-	req, err := http.NewRequest("POST", this.Addr + "/image/update_image", bytes.NewBuffer(jsonStr))
+
+	_,err := this.Do("POST", this.Addr + "/image/update_image", data)
+	if err!=nil {
+		fmt.Println("Update Image error:", err)
+	}
+
+	return err
+}
+
+func (this *CDServerCli) Do(method string, url string, data []byte) ([]byte,error) {
+	req, err := http.NewRequest(method, url, bytes.NewBuffer(data))
+	if err!=nil {
+		return nil, errors.New(fmt.Sprintf("Create http request error:", err))
+	}
+
 	req.Header.Set("User-Agent", "Kubernetes Build")
 	req.Header.Set("Content-Type", "application/json")
+
 	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
-	} else {
-		resp.Body.Close()
+	if err!=nil {
+		return nil, errors.New(fmt.Sprintf("Exec http request error:", err))
 	}
-	return nil
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New("Response code not 200")
+	}
+	defer resp.Body.Close()
+
+	return ioutil.ReadAll(resp.Body)
 }
