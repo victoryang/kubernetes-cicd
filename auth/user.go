@@ -43,16 +43,13 @@ type User struct {
 func (u *User) AuthByLdap(username, password string) error {
 	username = strings.TrimSpace(username)
 	password = strings.TrimSpace(password)
-	//l, err := ldap.Dial("tcp", "10.10.130.3:389")
 	l, err := ldap.Dial("tcp", LDAP_ADDR)
 	if err != nil {
 		return err
 	}
 	defer l.Close()
 
-	//bindusername := "cn=readonly,dc=snowballfinance,dc=com"
-	//bindpassword := "a76JzLCUKLYGcDlU"
-	bindusername := "CN=bot,CN=users,DC=snowball,DC=com"
+	bindusername := "CN=xxx,CN=xx,DC=xx,DC=xx"
 	bindpassword := LDAP_PWD
 	err = l.Bind(bindusername, bindpassword)
 
@@ -61,10 +58,9 @@ func (u *User) AuthByLdap(username, password string) error {
 		return err
 	}
 	searchRequest := ldap.NewSearchRequest(
-		//"ou=users,dc=snowballfinance,dc=com",
-		"DC=snowball,DC=com",
+		"DC=xxxx,DC=xxx",
 		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
-		fmt.Sprintf("(&(cn=%s)(project~=rolling))", username),
+		fmt.Sprintf("(&(cn=%s)(project~=xxxx))", username),
 		[]string{"rolling"},
 		nil,
 	)
