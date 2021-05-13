@@ -61,7 +61,7 @@ func (u *User) AuthByLdap(username, password string) error {
 		"DC=xxxx,DC=xxx",
 		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
 		fmt.Sprintf("(&(cn=%s)(project~=xxxx))", username),
-		[]string{"rolling"},
+		[]string{"xxx"},
 		nil,
 	)
 
